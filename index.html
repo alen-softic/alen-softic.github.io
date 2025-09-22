@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Name Picker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #002d4c 0%, #004d7a 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #ff4d59, #ff7b86);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .display-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .selected-name {
+            background: linear-gradient(135deg, #ff4d59, #ff7b86);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(255, 77, 89, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .selected-name:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 77, 89, 0.4);
+        }
+
+        .random-btn {
+            background: linear-gradient(135deg, #ff4d59, #ff7b86);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 77, 89, 0.3);
+        }
+
+        .random-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 77, 89, 0.4);
+        }
+
+        .random-btn:active {
+            transform: translateY(0);
+        }
+
+        .names-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #ff4d59;
+            font-weight: bold;
+        }
+
+        .names-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .name-item {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .name-input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            flex: 1;
+            padding: 5px;
+            outline: none;
+        }
+
+        .name-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .remove-btn {
+            background: #ff4d59;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-btn:hover {
+            background: #e03545;
+            transform: scale(1.1);
+        }
+
+        .add-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .add-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .add-input:focus {
+            border-color: #ff4d59;
+        }
+
+        .add-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .add-btn {
+            background: #ff4d59;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background: #e03545;
+            transform: translateY(-1px);
+        }
+
+        .stats {
+            text-align: center;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎲 Random Name Picker</h1>
+        
+        <div class="display-section">
+            <div class="selected-name" id="selectedName">Click "Pick Random" to start!</div>
+            <button class="random-btn" onclick="pickRandomName()">🎯 Pick Random Name</button>
+        </div>
+
+        <div class="names-section">
+            <div class="section-title">📝 Current Names</div>
+            <div class="names-grid" id="namesGrid"></div>
+            
+            <div class="add-section">
+                <input type="text" class="add-input" id="newNameInput" placeholder="Enter new name..." onkeypress="handleKeyPress(event)">
+                <button class="add-btn" onclick="addName()">➕ Add</button>
+            </div>
+        </div>
+
+        <div class="stats" id="stats"></div>
+    </div>
+
+    <script>
+        let names = [
+            'Marija', 'Saša', 'Margareta', 'Alen', 'Eva', 'Ivana', 
+            'Ivan', 'Martina', 'Tea', 'Marko', 'Antonija', 'Fani'
+        ];
+
+        function renderNames() {
+            const grid = document.getElementById('namesGrid');
+            grid.innerHTML = '';
+            
+            names.forEach((name, index) => {
+                const nameItem = document.createElement('div');
+                nameItem.className = 'name-item';
+                
+                nameItem.innerHTML = `
+                    <input type="text" class="name-input" value="${name}" onchange="updateName(${index}, this.value)" onblur="updateName(${index}, this.value)">
+                    <button class="remove-btn" onclick="removeName(${index})" title="Remove name">×</button>
+                `;
+                
+                grid.appendChild(nameItem);
+            });
+            
+            updateStats();
+        }
+
+        function updateStats() {
+            const stats = document.getElementById('stats');
+            stats.textContent = `Total names: ${names.length}`;
+        }
+
+        function pickRandomName() {
+            if (names.length === 0) {
+                document.getElementById('selectedName').textContent = 'No names available!';
+                return;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * names.length);
+            const selectedNameElement = document.getElementById('selectedName');
+            selectedNameElement.textContent = names[randomIndex];
+            selectedNameElement.classList.add('pulse');
+            
+            setTimeout(() => {
+                selectedNameElement.classList.remove('pulse');
+            }, 300);
+        }
+
+        function updateName(index, newValue) {
+            if (newValue.trim() !== '') {
+                names[index] = newValue.trim();
+            }
+        }
+
+        function removeName(index) {
+            names.splice(index, 1);
+            renderNames();
+        }
+
+        function addName() {
+            const input = document.getElementById('newNameInput');
+            const newName = input.value.trim();
+            
+            if (newName && !names.includes(newName)) {
+                names.push(newName);
+                input.value = '';
+                renderNames();
+            } else if (names.includes(newName)) {
+                alert('Name already exists!');
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                addName();
+            }
+        }
+
+        // Initialize the app
+        renderNames();
+    </script>
+</body>
+</html>
